@@ -10,18 +10,7 @@ import Ventas.Ventas;
 import Productos.Productos;
 import Informe.Informes;
 import Proveedores.Proveedores;
-import java.awt.*;
-import javax.swing.JFrame;
-import javax.swing.table.DefaultTableModel;
-import licoreriaca.LicoreriaCA;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+
 /**
 
 
@@ -31,10 +20,10 @@ import java.util.ArrayList;
  */
 public class Home extends javax.swing.JFrame {
     
-     LicoreriaCA conexion;
+     
             
     public Home() {
-       conexion = new LicoreriaCA(); 
+        
        initComponents();
     }
     
