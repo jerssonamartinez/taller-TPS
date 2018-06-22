@@ -203,8 +203,7 @@ public class Consultar extends javax.swing.JPanel {
                 jTable1.setModel(model);
             } catch (SQLException ex) {
                 ex.getMessage();
-            }
-            
+            }  
         }
     }
 
