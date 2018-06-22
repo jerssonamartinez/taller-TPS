@@ -278,9 +278,7 @@ public class Agregar extends javax.swing.JPanel {
             } catch (Exception ex) {
                 System.out.println("insertado");
             }
-            // desconectar();
         }
-
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

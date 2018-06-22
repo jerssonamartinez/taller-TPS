@@ -41,7 +41,7 @@ public class Eliminar extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 51));
-        jLabel2.setText("Id Venta:");
+        jLabel2.setText("Cod Venta:");
 
         jButton1.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 51, 102));
@@ -65,7 +65,7 @@ public class Eliminar extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(166, 166, 166)
                         .addComponent(jButton1)))
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
