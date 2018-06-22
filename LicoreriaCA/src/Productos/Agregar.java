@@ -17,7 +17,6 @@ public class Agregar extends javax.swing.JPanel {
     private Connection conn = null;
 
     public void realizarConexion() {
-
         String urlDatabase = "jdbc:postgresql://localhost:5432/LicoreraDB";
         try {
             Class.forName("org.postgresql.Driver");
