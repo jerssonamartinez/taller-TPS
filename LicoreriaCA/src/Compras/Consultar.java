@@ -5,6 +5,9 @@
  */
 package Compras;
 
+import java.sql.*;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Rodriguez
@@ -31,7 +34,7 @@ public class Consultar extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
+        consulta = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
@@ -42,7 +45,7 @@ public class Consultar extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(0, 51, 102));
         jLabel1.setText("Consultar Compra");
 
-        jTable1.setFont(new java.awt.Font("Arial", 3, 12)); // NOI18N
+        jTable1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jTable1.setForeground(new java.awt.Color(0, 0, 51));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -57,10 +60,15 @@ public class Consultar extends javax.swing.JPanel {
         jButton1.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 51, 102));
         jButton1.setText("Consultar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 51));
-        jLabel2.setText("Id Compra:");
+        jLabel2.setText("Cod Compra:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -81,7 +89,7 @@ public class Consultar extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(consulta, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(151, 151, 151))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -95,7 +103,7 @@ public class Consultar extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(consulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(jButton1)
                 .addGap(18, 18, 18)
@@ -114,14 +122,100 @@ public class Consultar extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private Connection conn = null;
+
+    public void realizarConexion() {
+        String urlDatabase = "jdbc:postgresql://localhost:5432/LicoreraDB";
+        try {
+            Class.forName("org.postgresql.Driver");
+            conn = DriverManager.getConnection(urlDatabase, "postgres", "1234");
+        } catch (Exception e) {
+            System.out.println("Ocurrio un error : " + e.getMessage());
+        }
+        if (conn != null) {
+            System.out.println("La conexión se realizo sin problemas! ");
+        }
+    }
+
+    public void desconectar() {
+        try {
+            conn.close();
+            conn = null;
+        } catch (SQLException ex) {
+            System.out.println("problema al desconectar la BD");
+        }
+        System.out.println("conn cerrada");
+    }
+
+    public void mostrarDatos() {
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("CodProd");
+        model.addColumn("CodCompra");
+        model.addColumn("Total Compra");
+        model.addColumn("Costo Prov.");
+        model.addColumn("Cant Compra");
+        model.addColumn("Fecha");
+        jTable1.setModel(model);
+
+        String tabla[] = new String[7];
+
+        if (conn != null) {
+            try {
+
+                ResultSet n = state();
+                while (n.next()) {
+                    tabla[0] = n.getString(1);
+                    tabla[1] = n.getString(2);
+                    tabla[2] = n.getString(3);
+                    tabla[3] = n.getString(4);
+                    tabla[4] = n.getString(5);
+                    tabla[5] = n.getString(6);
+                    tabla[6] = n.getString(7);
+                    model.addRow(tabla);
+                }
+
+                jTable1.setModel(model);
+            } catch (SQLException ex) {
+                ex.getMessage();
+            }
+        }
+    }
+
+    public ResultSet state() {
+        ResultSet n = null;
+        try {
+            Statement st = conn.createStatement();
+            if (consulta.getText().isEmpty()) {
+                n = st.executeQuery("SELECT idcompra,codprod,codcompra,totalcompra,"
+                        + "costoproveedor,cantcompra,fechacompra FROM compra");
+            } else {
+                n = st.executeQuery("SELECT idcompra,codprod,codcompra,totalcompra,costoproveedor,"
+                        + "cantcompra,fechacompra FROM compra WHERE codCompra=" + consulta.getText());
+            }
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
+        return n;
+    }
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        realizarConexion();
+        mostrarDatos();
+        desconectar();
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField consulta;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

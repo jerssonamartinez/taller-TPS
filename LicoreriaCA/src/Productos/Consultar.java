@@ -171,11 +171,11 @@ public class Consultar extends javax.swing.JPanel {
     
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("id");
-    model.addColumn("Cod");
-    model.addColumn("Cantidad");
+    model.addColumn("CodProd");
+    model.addColumn("Disponible");
     model.addColumn("Precio");
-    model.addColumn("Fecha Ad.");
-    model.addColumn("Fecha venc.");
+    model.addColumn("Fecha A.");
+    model.addColumn("Fecha V.");
     model.addColumn("Total");
     model.addColumn("iva");
     model.addColumn("Nombre");
@@ -197,6 +197,7 @@ public class Consultar extends javax.swing.JPanel {
                     tabla[6]=n.getString(7);
                     tabla[7]=n.getString(8);
                     tabla[8]=n.getString(9);
+                   
                     model.addRow(tabla);
                 }
                 
@@ -214,7 +215,7 @@ public class Consultar extends javax.swing.JPanel {
             if (consulta.getText().isEmpty()){
                 n = st.executeQuery("SELECT * FROM producto");   
             }else{
-                n = st.executeQuery("SELECT * FROM producto WHERE codProd="+consulta.getText());
+                n = st.executeQuery("SELECT * FROM producto WHERE codprod="+consulta.getText());
             }
         } catch (SQLException ex) {
             ex.getMessage();

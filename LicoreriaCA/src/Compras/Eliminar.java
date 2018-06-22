@@ -5,6 +5,10 @@
  */
 package Compras;
 
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Rodriguez
@@ -42,6 +46,11 @@ public class Eliminar extends javax.swing.JPanel {
         jButton1.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 51, 102));
         jButton1.setText("Eliminar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 51));
@@ -79,6 +88,47 @@ public class Eliminar extends javax.swing.JPanel {
                 .addContainerGap(162, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private Connection conn = null;
+
+    public void realizarConexion() {
+        String urlDatabase = "jdbc:postgresql://localhost:5432/LicoreraDB";
+        try {
+            Class.forName("org.postgresql.Driver");
+            conn = DriverManager.getConnection(urlDatabase, "postgres", "1234");
+        } catch (Exception e) {
+            System.out.println("Ocurrio un error : " + e.getMessage());
+        }
+        if (conn != null) {
+            System.out.println("La conexión se realizo sin problemas! ");
+        }
+    }
+
+    public void desconectar() {
+        try {
+            conn.close();
+            conn = null;
+        } catch (SQLException ex) {
+            System.out.println("problema al desconectar la BD");
+        }
+        System.out.println("conn cerrada");
+    }
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        realizarConexion();
+        if (jTextField1.getText().equals("")) {
+        } else {
+            try {
+                PreparedStatement pst = conn.prepareStatement("DELETE FROM compra WHERE codCompra = " + jTextField1.getText());
+                pst.executeUpdate();
+            } catch (SQLException ex) {
+                Logger.getLogger(Productos.Eliminar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        desconectar();
+    
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

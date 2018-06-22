@@ -46,33 +46,28 @@ public class Registrar extends javax.swing.JPanel {
     public void insertar() {
 
         if (conn != null) {
-            Statement s,j = null;
+            Statement s = null;
             ResultSet I = consulta();
+            ResultSet I2 = consulta2();
             
-            try {
+            try {   
                 adv.setText(advertencia());
      
                 //Si I no es nulo, es porque se arrojo un query por lo tanto. existe un dato con esa id
-
-                String T[] = new String[9];
+                //T query que consulta si existe un producto con ese cod
+               //T2 query que consulta si existe una compra con ese cod
+                String T[] = new String[1];
+                String T2[] = new String[1];
                 while (I.next()) {
                     T[0] = I.getString(1);
-                    T[1] = I.getString(2);
-                    T[2] = I.getString(3);
-                    T[3] = I.getString(4);
-                    T[4] = I.getString(5);
-                    T[5] = I.getString(6);
-                    T[6] = I.getString(7);
-                    T[7] = I.getString(8);
-                    T[8] = I.getString(9);
                 }
-
-               // int calc = Integer.parseInt(cantidad.getText()) * Integer.parseInt(precio.getText());
-               // total.setText("" + calc + "");
+                while (I2.next()) {
+                    T2[0] = I2.getString(1);
+                }
                 
-                if (T[2] != null) {
+                if ((T[0] != null) && (T2[0] ==null)) {
                     s = conn.createStatement();
-                    j = conn.createStatement();
+                  
                     s.executeQuery("INSERT INTO compra "
                             + "(codprod, codcompra, totalcompra, fechacompra, costoproveedor, cantcompra) VALUES ("
                             + codProd.getText()
@@ -83,7 +78,8 @@ public class Registrar extends javax.swing.JPanel {
                             + "," + cantidad.getText()
                             + ");"
                             + "UPDATE producto SET cantDisp=cantDisp+"+cantidad.getText()+
-                            "WHERE codProd="+codProd.getText());
+                            " WHERE codProd="+codProd.getText()+";UPDATE producto SET "
+                            + "valorcompra=cantDisp*precio WHERE codProd="+codProd.getText());
                 }
             } catch (Exception ex) {
                 System.out.println("insertado");
@@ -95,7 +91,18 @@ public class Registrar extends javax.swing.JPanel {
         ResultSet n = null;
         try {
             Statement st = conn.createStatement();
-            n = st.executeQuery("SELECT * FROM producto WHERE codprod = " + codProd.getText());
+            n = st.executeQuery("SELECT codProd FROM producto WHERE codprod = " + codProd.getText());
+
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
+        return n;
+    }
+    public ResultSet consulta2() {
+        ResultSet n = null;
+        try {
+            Statement st = conn.createStatement();
+            n = st.executeQuery("SELECT codCompra FROM compra WHERE codCompra = " + codComp.getText());
 
         } catch (SQLException ex) {
             ex.getMessage();
@@ -107,30 +114,29 @@ public class Registrar extends javax.swing.JPanel {
         String S = null;
         
         ResultSet Q = consulta();
-
-        String T[] = new String[9];
+        ResultSet Q2= consulta2();
+        //T query que consulta si existe un producto con ese cod
+        String T[] = new String[1];
+        //T2 query que consulta si existe una compra con ese cod
+        String T2[] = new String[1];
         
         while (Q.next()) {
             T[0] = Q.getString(1);
-            T[1] = Q.getString(2);
-            T[2] = Q.getString(3);
-            T[3] = Q.getString(4);
-            T[4] = Q.getString(5);
-            T[5] = Q.getString(6);
-            T[6] = Q.getString(7);
-            T[7] = Q.getString(8);
-            T[8] = Q.getString(9);
-            
+        }
+        while (Q2.next()) {
+            T2[0] = Q2.getString(1);    
         }
 
         if (codComp.getText().isEmpty() || calendar1.getDate().toString().isEmpty()
                 || CP.getText().isEmpty() || codProd.getText().isEmpty()
                 || cantidad.getText().isEmpty() || total.getText().isEmpty()) {
             S = "<html>Error al guardar el dato. Existen campos vacíos</html>";
-        } else if (T[2] == null) {
+        } else if (T[0] == null) {
             S = "<html>Error al insertar el dato, NO existe un producto con ese codigo</html>";
-        } else {
-            S = " ";
+        } else if (T2[0] != null){
+            S = "<html>Error al insertar el dato, Ya existe una compra con ese codigo</html>";
+        }else{
+        S = " ";
         }
         return S;
     }

@@ -254,23 +254,15 @@ public class Agregar extends javax.swing.JPanel {
      
                 //Si I no es nulo, es porque se arrojo un query por lo tanto. existe un dato con esa id
 
-                String T[] = new String[9];
+                String T[] = new String[1];
                 while (I.next()) {
                     T[0] = I.getString(1);
-                    T[1] = I.getString(2);
-                    T[2] = I.getString(3);
-                    T[3] = I.getString(4);
-                    T[4] = I.getString(5);
-                    T[5] = I.getString(6);
-                    T[6] = I.getString(7);
-                    T[7] = I.getString(8);
-                    T[8] = I.getString(9);
                 }
 
                 int calc = Integer.parseInt(cantidad.getText()) * Integer.parseInt(precio.getText());
                 total.setText("" + calc + "");
                 
-                if (T[2] == null) {
+                if (T[0] == null) {
                     s = conn.createStatement();
                     s.executeQuery("INSERT INTO producto "
                             + "(codprod, cantdisp, precio, fechaprod, fechavenc, valorcompra, iva, nombreprod) VALUES ("
@@ -302,7 +294,7 @@ public class Agregar extends javax.swing.JPanel {
         ResultSet n = null;
         try {
             Statement st = conn.createStatement();
-            n = st.executeQuery("SELECT * FROM producto WHERE codprod = " + cod.getText());
+            n = st.executeQuery("SELECT codProd FROM producto WHERE codprod = " + cod.getText());
 
         } catch (SQLException ex) {
             ex.getMessage();
@@ -314,24 +306,17 @@ public class Agregar extends javax.swing.JPanel {
         String S = null;
         ResultSet Q = consulta();
 
-        String T[] = new String[9];
+        String T[] = new String[1];
         while (Q.next()) {
             T[0] = Q.getString(1);
-            T[1] = Q.getString(2);
-            T[2] = Q.getString(3);
-            T[3] = Q.getString(4);
-            T[4] = Q.getString(5);
-            T[5] = Q.getString(6);
-            T[6] = Q.getString(7);
-            T[7] = Q.getString(8);
-            T[8] = Q.getString(9);
+            
         }
 
         if (nombre.getText().isEmpty() || calendar1.getDate().toString().isEmpty()
                 || calendar2.getDate().toString().isEmpty() || precio.getText().isEmpty()
                 || cantidad.getText().isEmpty() || cod.getText().isEmpty()) {
             S = "<html>Error al guardar el dato. Existen campos vacíos</html>";
-        } else if (T[2] != null) {
+        } else if (T[0] != null) {
             S = "<html>Error al insertar el dato, ya existe un producto con ese codigo</html>";
         } else {
             S = " ";
