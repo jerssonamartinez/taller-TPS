@@ -6,6 +6,8 @@
 package Ventas;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,7 +35,7 @@ public class Registrar extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         codVent = new javax.swing.JTextField();
-        nombreProd = new javax.swing.JTextField();
+        codprod = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         total = new javax.swing.JTextField();
@@ -45,7 +47,7 @@ public class Registrar extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         calendar1 = new com.toedter.calendar.JDateChooser();
         jLabel9 = new javax.swing.JLabel();
-        codProd = new javax.swing.JTextField();
+        nombreprod = new javax.swing.JTextField();
         adv = new javax.swing.JLabel();
 
         jLabel1.setText("jLabel1");
@@ -74,7 +76,13 @@ public class Registrar extends javax.swing.JPanel {
 
         jLabel4.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 51));
-        jLabel4.setText("Nombre producto:");
+        jLabel4.setText("Cod producto:");
+
+        total.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                totalMouseClicked(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 0, 51));
@@ -100,7 +108,21 @@ public class Registrar extends javax.swing.JPanel {
 
         jLabel9.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 0, 51));
-        jLabel9.setText("Cod producto:");
+        jLabel9.setText("Nombre producto");
+
+        nombreprod.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                nombreprodMouseClicked(evt);
+            }
+        });
+        nombreprod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nombreprodActionPerformed(evt);
+            }
+        });
+
+        adv.setFont(new java.awt.Font("Arial", 3, 11)); // NOI18N
+        adv.setForeground(new java.awt.Color(255, 0, 0));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -124,8 +146,8 @@ public class Registrar extends javax.swing.JPanel {
                             .addComponent(jLabel9))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(codProd, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nombreProd, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(nombreprod, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(codprod, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -174,11 +196,11 @@ public class Registrar extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(nombreProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(codprod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(codProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nombreprod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -207,7 +229,7 @@ public class Registrar extends javax.swing.JPanel {
     }//GEN-LAST:event_codVentActionPerformed
 
     private Connection conn = null;
-
+    
     public void realizarConexion() {
         String urlDatabase = "jdbc:postgresql://localhost:5432/LicoreraDB";
         try {
@@ -220,6 +242,7 @@ public class Registrar extends javax.swing.JPanel {
             System.out.println("La conexión se realizo sin problemas! ");
         }
     }
+
     public void desconectar() {
         try {
             conn.close();
@@ -229,21 +252,154 @@ public class Registrar extends javax.swing.JPanel {
         }
         System.out.println("conn cerrada");
     }
-    
+
+    public void insertar() {
+
+        if (conn != null) {
+            Statement s = null;
+            ResultSet I = consulta();
+            ResultSet I2 = consulta2();
+
+            int newtotal = Integer.parseInt(total.getText())
+                        - Integer.parseInt(descuento.getText());
+
+            try {
+                adv.setText(advertencia());
+
+                //Si I no es nulo, es porque se arrojo un query por lo tanto. existe un dato con esa id
+                //T query que consulta si existe un producto con ese cod
+                //T2 query que consulta si existe una venta con ese cod
+                String T[] = new String[1];
+                String T2[] = new String[1];
+                while (I.next()) {
+                    T[0] = I.getString(1);
+                }
+                while (I2.next()) {
+                    T2[0] = I2.getString(1);
+                }
+
+                if ((T[0] != null) && (T2[0] == null)) {
+                    s = conn.createStatement();
+                   
+                    s.executeQuery("INSERT INTO venta "
+                            + "(codprod, nombreprod, codventa, totalventa, fechaventa, descuentos,cantidad) VALUES ("
+                            + codprod.getText()
+                            + ",'" + nombreprod.getText()
+                            + "'," + codVent.getText()
+                            + "," + newtotal
+                            + ",'" + calendar1.getDate().toString()
+                            + "'," + descuento.getText()
+                            + "," + cantidad.getText()
+                            + ");"
+                            + "UPDATE producto SET cantDisp=cantDisp-" + cantidad.getText()
+                            + " WHERE codProd=" + codprod.getText() + ";UPDATE producto SET "
+                            + "valorcompra=cantDisp*precio WHERE codProd=" + codprod.getText());
+                }
+            } catch (Exception ex) {
+                System.out.println("insertado");
+            }
+        }
+    }
+
+    public ResultSet consulta() {
+        ResultSet n = null;
+        try {
+            Statement st = conn.createStatement();
+            n = st.executeQuery("SELECT nombreprod FROM producto WHERE codprod = " + codprod.getText());
+
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
+        return n;
+    }
+
+    public ResultSet consulta2() {
+        ResultSet n = null;
+        try {
+            Statement st = conn.createStatement();
+            n = st.executeQuery("SELECT codventa FROM venta WHERE codventa = " + codVent.getText());
+
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
+        return n;
+    }
+
+    public String advertencia() throws SQLException {
+        String S = null;
+
+        ResultSet Q = consulta();
+        ResultSet Q2 = consulta2();
+        //T query que consulta si existe un producto con ese cod
+        String T[] = new String[1];
+        //T2 query que consulta si existe una venta con ese cod
+        String T2[] = new String[1];
+
+        while (Q.next()) {
+            T[0] = Q.getString(1);
+        }
+        while (Q2.next()) {
+            T2[0] = Q2.getString(1);
+        }
+
+        if (codVent.getText().isEmpty() || calendar1.getDate().toString().isEmpty()
+                || descuento.getText().isEmpty() || codprod.getText().isEmpty()
+                || cantidad.getText().isEmpty() || total.getText().isEmpty()
+                || nombreprod.getText().isEmpty()) {
+            S = "<html>Error al guardar el dato. Existen campos vacíos</html>";
+        } else if (T[0] == null) {
+            S = "<html>Error al insertar el dato, NO existe un producto con ese codigo</html>";
+        } else if (T2[0] != null) {
+            S = "<html>Error al insertar el dato, Ya existe una venta con ese codigo</html>";
+        } else {
+            S = " ";
+        }
+        return S;
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+
         realizarConexion();
+        insertar();
         desconectar();
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void nombreprodMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nombreprodMouseClicked
+
+        realizarConexion();
+        ResultSet C = consulta();
+        String data[] = new String[1];
+        try {
+            while (C.next()) {
+                data[0] = C.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
+        if (data[0] == null) {
+        } else {
+            nombreprod.setText(data[0]);
+        }
+        desconectar();
+
+    }//GEN-LAST:event_nombreprodMouseClicked
+
+    private void nombreprodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreprodActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nombreprodActionPerformed
+
+    private void totalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_totalMouseClicked
+
+    }//GEN-LAST:event_totalMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel adv;
     private com.toedter.calendar.JDateChooser calendar1;
     private javax.swing.JTextField cantidad;
-    private javax.swing.JTextField codProd;
     private javax.swing.JTextField codVent;
+    private javax.swing.JTextField codprod;
     private javax.swing.JTextField descuento;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
@@ -255,7 +411,7 @@ public class Registrar extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JTextField nombreProd;
+    private javax.swing.JTextField nombreprod;
     private javax.swing.JTextField total;
     // End of variables declaration//GEN-END:variables
 }
