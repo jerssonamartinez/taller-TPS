@@ -261,7 +261,7 @@ public class Registrar extends javax.swing.JPanel {
             ResultSet I2 = consulta2();
 
             int newtotal = Integer.parseInt(total.getText())
-                        - Integer.parseInt(descuento.getText());
+                    - Integer.parseInt(descuento.getText());
 
             try {
                 adv.setText(advertencia());
@@ -280,7 +280,7 @@ public class Registrar extends javax.swing.JPanel {
 
                 if ((T[0] != null) && (T2[0] == null)) {
                     s = conn.createStatement();
-                   
+                    System.out.println("pruebeichon");
                     s.executeQuery("INSERT INTO venta "
                             + "(codprod, nombreprod, codventa, totalventa, fechaventa, descuentos,cantidad) VALUES ("
                             + codprod.getText()
