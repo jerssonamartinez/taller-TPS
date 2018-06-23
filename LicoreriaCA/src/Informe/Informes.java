@@ -202,53 +202,54 @@ public class Informes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public void generar(String path) {
+        
+        realizarConexion();
         try {
-            realizarConexion();
-
+            
             JasperReport reporte = null;
 
+            System.out.println("eje");
             reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
             JasperPrint jp = JasperFillManager.fillReport(path, null, conn);
             JasperViewer vista = new JasperViewer(jp, false);
 
             vista.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             vista.setVisible(true);
-
-            desconectar();
+  
         } catch (JRException ex) {
             ex.getMessage();
         }
-
+        desconectar();
     }
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-        String path = "src\\Informe\\productos.jasper";
+        String path = "..\\src\\Informe\\productos.jasper";
         generar(path);
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        String path = "src\\Informe\\ventas.jasper";
+        String path = "..\\src\\Informe\\ventas.jasper";
         generar(path);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        String path = "src\\Informe\\compras.jasper";
+        String path = "..\\src\\Informe\\compras.jasper";
         generar(path);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-        String path = "src\\Informe\\proveedores.jasper";
+        String path = "..\\src\\Informe\\proveedores.jasper";
         generar(path);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-        String path = "src\\Informe\\clientes.jasper";
+        String path = "..\\src\\Informe\\clientes.jasper";
         generar(path);
     }//GEN-LAST:event_jButton5ActionPerformed
 
