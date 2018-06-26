@@ -6,6 +6,9 @@
 package Ventas;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -117,14 +120,15 @@ public class Eliminar extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
         realizarConexion();
-        if (jTextField1.getText().equals("")) {
-        } else {
-            try {
-                PreparedStatement pst = conn.prepareStatement("DELETE FROM venta WHERE codventa = " + jTextField1.getText());
-                pst.executeUpdate();
-            } catch (SQLException ex) {
-                ex.getMessage();
-            }
+        if(jTextField1.getText().equals("")){}
+        else{
+        try {
+            int resp = JOptionPane.showConfirmDialog(null, "¿Desea eliminar la venta?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            PreparedStatement pst =conn.prepareStatement("DELETE FROM venta WHERE codventa = "+jTextField1.getText());
+            pst.executeUpdate();
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
         }
         desconectar();
         

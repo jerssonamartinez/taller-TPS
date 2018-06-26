@@ -8,6 +8,7 @@ package Productos;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 
@@ -124,10 +125,11 @@ public class Eliminar extends javax.swing.JPanel {
         if(jTextField1.getText().equals("")){}
         else{
         try {
+            int resp = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el producto?", "Confirmación", JOptionPane.YES_NO_OPTION);
             PreparedStatement pst =conn.prepareStatement("DELETE FROM producto WHERE codprod = "+jTextField1.getText());
             pst.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(Eliminar.class.getName()).log(Level.SEVERE, null, ex);
+            ex.getMessage();
         }
         }
         desconectar();

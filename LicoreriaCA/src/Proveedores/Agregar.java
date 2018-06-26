@@ -248,10 +248,18 @@ public class Agregar extends javax.swing.JPanel {
         }
         return S;
     }
+    public void limpiar(){
+        nombreP.setText("");
+        telP.setText("");
+        rsP.setText("");
+        idComp.setText("");
+       
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         realizarConexion();
         insertar();
+        limpiar();
         desconectar();
     }//GEN-LAST:event_jButton1ActionPerformed
 

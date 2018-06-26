@@ -140,6 +140,14 @@ public class Registrar extends javax.swing.JPanel {
         }
         return S;
     }
+    public void limpiar(){
+        codComp.setText("");
+        codProd.setText("");
+        calendar1.setCalendar(null);
+        cantidad.setText("");
+        CP.setText("");
+        total.setText("");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -319,6 +327,7 @@ public class Registrar extends javax.swing.JPanel {
         
         realizarConexion();
         insertar();
+        limpiar();
         desconectar();
     }//GEN-LAST:event_jButton1ActionPerformed
 

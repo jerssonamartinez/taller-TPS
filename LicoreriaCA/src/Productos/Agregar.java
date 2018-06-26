@@ -280,11 +280,20 @@ public class Agregar extends javax.swing.JPanel {
             }
         }
     }
+    public void limpiar(){
+        nombre.setText("");
+        cod.setText("");
+        calendar1.setCalendar(null);
+        cantidad.setText("");
+        precio.setText("");
+        total.setText("");
+    }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         realizarConexion();
         insertar();
+        limpiar();
         desconectar();
     }//GEN-LAST:event_jButton1ActionPerformed
 

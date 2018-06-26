@@ -8,6 +8,7 @@ package Compras;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -117,15 +118,17 @@ public class Eliminar extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         realizarConexion();
-        if (jTextField1.getText().equals("")) {
-        } else {
-            try {
-                PreparedStatement pst = conn.prepareStatement("DELETE FROM compra WHERE codCompra = " + jTextField1.getText());
-                pst.executeUpdate();
-            } catch (SQLException ex) {
-                Logger.getLogger(Productos.Eliminar.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if(jTextField1.getText().equals("")){}
+        else{
+        try {
+            int resp = JOptionPane.showConfirmDialog(null, "¿Desea eliminar la compra?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            PreparedStatement pst =conn.prepareStatement("DELETE FROM compra WHERE codcompra = "+jTextField1.getText());
+            pst.executeUpdate();
+        } catch (SQLException ex) {
+            ex.getMessage();
         }
+        }
+        
         desconectar();
     
     }//GEN-LAST:event_jButton1ActionPerformed
